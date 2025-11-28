@@ -9,7 +9,7 @@ import glob
 import os
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-import seaborn as sns
+#import seaborn as sns
 import sys
 
 def convert_ddf_to_monthly_csv(in_directory, out_directory, dates_from_filenames=True):
@@ -341,14 +341,48 @@ def histogram_match(data1, data2, lims,  bins=50):
     
     return gamma
 
+def read_AsciiGrid(fname, setnans=True):
+    """
+    reads AsciiGrid format in fixed format as below:
+        ncols         750
+        nrows         375
+        xllcorner     350000
+        yllcorner     6696000
+        cellsize      16
+        NODATA_value  -9999
+        -9999 -9999 -9999 -9999 -9999
+        -9999 4.694741 5.537514 4.551162
+        -9999 4.759177 5.588773 4.767114
+    IN:
+        fname - filename (incl. path)
+    OUT:
+        data - 2D numpy array
+        info - 6 first lines as list of strings
+        (xloc,yloc) - lower left corner coordinates (tuple)
+        cellsize - cellsize (in meters?)
+        nodata - value of nodata in 'data'
+    Samuli Launiainen Luke 7.9.2016
+    """
+    import numpy as np
 
+    fid = open(fname, 'r')
+    info = fid.readlines()[0:6]
+    fid.close()
 
+    # print info
+    # conversion to float is needed for non-integers read from file...
+    xloc = float(info[2].split(' ')[-1])
+    yloc = float(info[3].split(' ')[-1])
+    cellsize = float(info[4].split(' ')[-1])
+    nodata = float(info[5].split(' ')[-1])
 
+    # read rest to 2D numpy array
+    data = np.loadtxt(fname, skiprows=6)
 
+    if setnans is True:
+        data[data == nodata] = np.NaN
+        nodata = np.NaN
 
+    data = np.array(data, ndmin=2)
 
-
-
-
-    
-
+    return data, info, (xloc, yloc), cellsize, nodata
