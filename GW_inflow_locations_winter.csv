@@ -1,9 +1,0 @@
-x_start_m,x_end_m,x_mid_m,length_m,season,method,intersects_esker
-344.69,358.894,351.79200000000003,14.204000000000008,Winter (Dec-Feb),Temperature gradient anomaly detection (|dT/dx| > threshold),False
-411.653,636.893,524.273,225.24,Winter (Dec-Feb),Temperature gradient anomaly detection (|dT/dx| > threshold),False
-679.506,738.353,708.9295,58.84699999999998,Winter (Dec-Feb),Temperature gradient anomaly detection (|dT/dx| > threshold),False
-1138.103,1172.599,1155.351,34.49599999999987,Winter (Dec-Feb),Temperature gradient anomaly detection (|dT/dx| > threshold),True
-1270.0,1428.277,1349.1385,158.27700000000004,Winter (Dec-Feb),Temperature gradient anomaly detection (|dT/dx| > threshold),True
-1533.795,1616.992,1575.3935000000001,83.19699999999989,Winter (Dec-Feb),Temperature gradient anomaly detection (|dT/dx| > threshold),False
-1661.634,1683.955,1672.7945,22.320999999999913,Winter (Dec-Feb),Temperature gradient anomaly detection (|dT/dx| > threshold),False
-1844.261,1939.633,1891.9470000000001,95.37200000000007,Winter (Dec-Feb),Temperature gradient anomaly detection (|dT/dx| > threshold),False
