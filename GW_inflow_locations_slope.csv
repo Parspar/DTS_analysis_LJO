@@ -1,0 +1,5 @@
+x_start_m,x_end_m,x_mid_m,length_m,method,intersects_esker
+1203.037,1215.212,1209.1245,12.174999999999955,"Seasonal slope contrast (winter dT/dx < 0, summer dT/dx > 0)",True
+1270.0,1426.248,1348.124,156.24800000000005,"Seasonal slope contrast (winter dT/dx < 0, summer dT/dx > 0)",True
+1659.605,1688.013,1673.809,28.4079999999999,"Seasonal slope contrast (winter dT/dx < 0, summer dT/dx > 0)",False
+1911.224,1939.633,1925.4285,28.409000000000106,"Seasonal slope contrast (winter dT/dx < 0, summer dT/dx > 0)",False
