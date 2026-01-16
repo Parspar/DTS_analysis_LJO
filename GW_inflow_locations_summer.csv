@@ -1,0 +1,13 @@
+x_start_m,x_end_m,x_mid_m,length_m,season,method,intersects_esker
+72.778,289.902,181.34,217.12399999999997,Summer (Jun-Aug),Temperature gradient anomaly detection (|dT/dx| > threshold),False
+480.646,517.171,498.9085,36.525000000000034,Summer (Jun-Aug),Temperature gradient anomaly detection (|dT/dx| > threshold),False
+669.36,748.499,708.9295,79.13900000000001,Summer (Jun-Aug),Temperature gradient anomaly detection (|dT/dx| > threshold),False
+902.717,989.972,946.3444999999999,87.255,Summer (Jun-Aug),Temperature gradient anomaly detection (|dT/dx| > threshold),False
+1044.76,1071.14,1057.95,26.38000000000011,Summer (Jun-Aug),Temperature gradient anomaly detection (|dT/dx| > threshold),True
+1164.482,1178.687,1171.5845,14.204999999999927,Summer (Jun-Aug),Temperature gradient anomaly detection (|dT/dx| > threshold),True
+1270.0,1420.16,1345.08,150.16000000000008,Summer (Jun-Aug),Temperature gradient anomaly detection (|dT/dx| > threshold),True
+1434.365,1470.89,1452.6275,36.52500000000009,Summer (Jun-Aug),Temperature gradient anomaly detection (|dT/dx| > threshold),False
+1495.24,1621.05,1558.145,125.80999999999995,Summer (Jun-Aug),Temperature gradient anomaly detection (|dT/dx| > threshold),False
+1653.517,1688.013,1670.7649999999999,34.49599999999987,Summer (Jun-Aug),Temperature gradient anomaly detection (|dT/dx| > threshold),False
+1714.393,1807.736,1761.0645,93.34300000000007,Summer (Jun-Aug),Temperature gradient anomaly detection (|dT/dx| > threshold),False
+1840.203,1939.633,1889.9180000000001,99.43000000000006,Summer (Jun-Aug),Temperature gradient anomaly detection (|dT/dx| > threshold),False

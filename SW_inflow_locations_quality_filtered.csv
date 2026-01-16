@@ -1,0 +1,2 @@
+x_start_m,x_end_m,x_mid_m,length_m,method,feature_type,data_quality
+371.069,456.295,413.682,85.226,Quality-filtered (≥63.7% data availability),Ditch or Tributary,High (≥median availability)
