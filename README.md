@@ -1,150 +1,74 @@
-# DTS Analysis of Groundwater and Surface Water Inflows — LJO Catchment-Northern Finland
+# DTS Analysis — Groundwater & Surface Water Inflows in the LJO Catchment
 
-**Author:** Parsa Parvizi  
-**Affiliation:** University of Oulu, Finland  
-**Contact:** parsa.parvizi@oulu.fi  
-**Repository:** [github.com/Parspar/DTS_analysis_LJO](https://github.com/Parspar/DTS_analysis_LJO)
+**Author:** Parsa Parvizi · University of Oulu, Finland
+**Contact:** parsa.parvizi@oulu.fi
+**Repo:** [github.com/Parspar/DTS_analysis_LJO](https://github.com/Parspar/DTS_analysis_LJO)
 
 ---
 
 ## Project
 
-This repository contains the complete analysis pipeline for a study that uses **Distributed Temperature Sensing (DTS)** — fiber-optic cables that measure temperature continuously along a stream — to pinpoint groundwater and surface water inflow locations in a subarctic headwater stream in **Pallas, Northern Finland** (the LJO catchment).
+Analysis of a fiber-optic Distributed Temperature Sensing (DTS) cable laid along ~2000 m of a small subarctic stream in **Pallas, Northern Finland** (the LJO headwater catchment, DTS corvering data 2021–2024).
 
-The idea is simple: groundwater has a different temperature than surface water, and that difference flips between seasons. By tracking these seasonal temperature patterns along ~1940 m of stream, we can identify where groundwater enters (and where surface water through snowmelt-driven surface regime temperature analysis enters during spring).
+The goal: locate where **groundwater (GW)** and **surface water (SW)** enter the stream, and check those locations against a SpaFHy-2D hydrological model and topographic predictors (UCA, TWI, flow accumulation).
 
-## How the Detection Works
+## The idea behind the methods
 
-### Groundwater Inflows
+Groundwater holds a fairly steady temperature year-round, while stream temperature swings with the seasons. That contrast flips sign between seasons, and DTS is sensitive enough to see it.
 
-Groundwater maintains a relatively stable temperature year-round. This creates a predictable pattern:
+- **GW detection** — uses the *seasonal gradient-reversal* signature. Cold-season (25th-quantile) and warm-season (75th-quantile) profiles are compared along the stream. Where the two gradients reverse (cold profile cools downstream, warm profile warms downstream) and the local temperature sits in the 4–5 °C spring-water band, the cell is flagged as a GW zone.
 
-- **In winter**, groundwater is *warmer* than the cold stream, so the stream warms slightly downstream of an inflow (negative temperature gradient).
-- **In summer**, groundwater is *cooler* than the warm stream, so the stream cools downstream of an inflow (positive temperature gradient).
+- **SW detection** — uses the *melt-season mean profile*. A trailing upstream baseline is built (with the GW spring zone masked out), then locations are flagged where the stream is cooler than the baseline by ≥ 0.03 °C **and** the second spatial derivative is positive (a clear "dip" in the longitudinal profile).
 
+SW methods filtered for night-time + active melt (snow > 0, Q > 0.2 m³/s). GW analysis has been done for the night time only so daytime solar heating doesn't contaminate the signal.
 
-### Surface Water Inflows
+## Pipeline
 
-During snowmelt, cold meltwater enters the stream from the surrounding landscape. These inflows stand out by their:
+Notebooks are numbered to be run in order. Each one is self-contained and produces figures/CSVs used by later steps.
 
-- High temperature variability (pulses of melt-driven input)
-- Cold anomalies relative to the stream
-- Sharp positive temperature gradients
+| # | Notebook | What it does |
+|---|---|---|
+| 01 | `2D Heat Map` | Space–time temperature heatmap of the full DTS record |
+| 02 | `Meteo and Model Sim` | Forcing data (Q, snow, precip, air T) overview |
+| 03 | `GW-SW methods` | **Core analysis** — detects GW & SW zones, writes `GW_zones.csv` and `SW_zones.csv` |
+| 04 | `UCAs & TWI` | Upslope contributing area + topographic wetness index along the stream |
+| 05 | `Flow ACC & TWI – Maps` | Catchment maps of flow accumulation and TWI |
+| 06 | `Classified Stream LJO inflow to ditch for Monthly MEANs` | Monthly mean inflow at the ditch confluence |
+| 07 | `Final model results` | DTS observations vs. SpaFHy-2D model outputs |
+| 08 | `Overland flow along stream` | Modelled overland flow along the stream, with GW/SW zones overlaid |
 
+`DTS preprocessing/` holds the raw-file conversion utilities and `utils.py` (DTS I/O, FMI meteo readers, ASCII-grid reader, plotting helpers).
 
-## Repository Structure
-
-```
-DTS_analysis_LJO/
-│
-├── DTS GW & SW Classifications.ipynb    # Main analysis — classifies GW and SW inflows
-├── Final model results.ipynb            # Compares DTS observations with SpaFHy-2D model outputs
-├── UCAs & TWI.ipynb                     # Topographic controls: upslope contributing areas & wetness index
-├── Meteo and Model Sim.ipynb            # Meteorological forcing data and model simulation overview
-├── 2D Heat Map.ipynb                    # Spatial-temporal temperature heatmaps
-├── Flow ACC & TWI - Maps.ipynb          # Flow accumulation and TWI maps
-├── Classified Stream LJO inflow to ditch for Monthly MEANs.ipynb
-│                                        # Monthly mean analysis of stream-to-ditch inflows
-├── Overland flow along stream.ipynb     # Overland flow analysis along the stream
-├── Bedrock-Pallas-Flow acc.ipynb        # Bedrock-level flow accumulation analysis
-├── comparsion of Forcings to raw data.ipynb  # Comparing forcing data with raw observations
-│
-├── utils.py                             # Shared utility functions (DTS I/O, plotting, grid reading)
-│
-├── GW_inflow_locations_slope.csv        # Output: classified groundwater inflow zones
-├── SW_inflow_locations_slope.csv        # Output: classified surface water inflow zones
-├── lateral_inflows_for_DTS.csv          # Lateral inflow data (ditch and tributary)
-├── lateral_inflows_for_DTS_Monthly.csv  # Monthly lateral inflow data
-├── distance_along_stream_DTS.csv        # Distance coordinates along the DTS cable
-│
-├── plotting_example.ipynb               # Example plotting routines
-├── visu_tests.ipynb                     # Visualization experiments
-├── process_files.ipynb                  # Data processing utilities
-│
-└── data/                                # Data directory (not in repo — see below)
-```
-
-### Where to Start
-
-If you want to understand the core analysis, start with **`DTS GW & SW Classifications.ipynb`** — that's where the groundwater and surface water inflow classification happens. From there, `Final model results.ipynb` shows how the DTS findings compare to hydrological model predictions, and `UCAs & TWI.ipynb` explores the topographic reasons behind the observed inflow patterns.
-
-## Data
-
-The raw data files are too large for Git and are **not included** in this repository. To run the notebooks, you'll need to set up a `data/` folder with the following structure:
-
-| Data | Path | Description |
-|------|------|-------------|
-| DTS measurements | `data/DTS/pallas_dts_data_f_6.nc` | NetCDF file, ~1940 m of stream, 2021–2024 |
-| Discharge | `data/forcing/30_min_interval_discharge.csv` | 30-minute interval catchment discharge |
-| Snow depth | `data/forcing/snow_depth_kittila.csv` | Daily snow depth from Kittila station |
-| Precipitation | `data/forcing/precipitation_lompolonvuoma_2021_2024.csv` | Precipitation time series |
-| Air temperature | `data/forcing/air_temperature_lompolonvuoma_2021_2024.csv` | Air temperature time series |
-| Model results | `data/model_results/.nc` | SpaFHy-2D hydrological model outputs |
-| Geospatial data | `data/WBT_data/` | DEMs, flow accumulation grids, TWI rasters (8 m & 16 m) |
-
-
-
-
-## Installation
+## Quick start
 
 ```bash
-# Clone the repository
 git clone https://github.com/Parspar/DTS_analysis_LJO.git
 cd DTS_analysis_LJO
 
-# Create a conda environment (recommended)
-conda create -n dts-analysis python=3.9
+conda create -n dts-analysis python=3.9 -y
 conda activate dts-analysis
-
-# Install dependencies
-pip install xarray netcdf4 numpy pandas matplotlib seaborn rasterio
+pip install xarray netcdf4 numpy pandas matplotlib geopandas rasterio
 ```
 
-Then place your data files in the `data/` directory following the structure above, and you should be good to go.
+Open the notebooks in order, starting with `03-GW-SW methods.ipynb` if you only want the core result.
 
-## Key Outputs
+## Data
 
-The main classification notebook produces two CSV files:
+The raw data is too large for Git and is not in the repo. The SpaFHy model used in this study is available at https://doi.org/10.5281/zenodo.19186743 with meteorological forcing files and geospatial input rasters.
 
-**`GW_inflow_locations_slope.csv`** — Groundwater inflow zones:
+## Key outputs
 
-| Column | Meaning |
-|--------|---------|
-| `x_start_m` | Start position along stream (m) |
-| `x_end_m` | End position along stream (m) |
-| `x_mid_m` | Midpoint of the segment (m) |
-| `length_m` | Length of the inflow zone (m) |
-| `method` | Detection method used |
-| `intersects_esker` | Whether the segment overlaps with the esker zone |
-
-**`SW_inflow_locations_slope.csv`** — Surface water inflow zones (same columns, minus `intersects_esker`).
-
-## Utility Functions
-
-The `utils.py` module provides reusable functions shared across notebooks:
-
-- **`convert_ddf_to_monthly_csv`** — Converts raw DTS `.ddf` files into monthly CSV files
-- **`read_and_combine_dts_files`** — Reads and merges DTS CSV files into a single pivoted DataFrame
-- **`read_fmi_meteo_obs`** — Reads Finnish Meteorological Institute observation files
-- **`plot_2D_dts_colormap`** — Creates 2D temperature heatmaps with meteorological context
-- **`read_AsciiGrid`** — Reads ArcGIS ASCII grid files for geospatial data
-- **`histogram_match`** — Computes histogram matching scores for model validation
-
-## Study Area
-
-The LJO catchment is a small headwater catchment near **Pallas** in Finnish Lapland. The DTS cable runs along approximately 1940 m of the main stream channel. The area features boreal/subarctic vegetation, seasonal snow cover (typically October–May), and a prominent esker formation that influences subsurface water flow. The measurement period spans from June 2021 to September 2024.
+- **`GW_zones.csv`** — groundwater inflow zones (`x_start_m`, `x_end_m`, `width_m`, `type`)
+- **`SW_zones.csv`** — surface water inflow zones 
 
 ## Citation
 
-If you use this code or build on this work, please cite:
-
-```
-[Citation will be added upon publication]
-```
+Citation will be added on publication.
 
 ## License
- MIT
+
+MIT
 
 ---
 
-*This repository is part of PhD research at the University of Oulu on stream–aquifer interactions in subarctic catchments. If you have questions or ideas for collaboration, feel free to reach out.*
+*Part of PhD work at the University of Oulu - DIWA PhD flagship on stream–aquifer interactions in subarctic catchments. Questions and collaboration ideas are welcome.*
